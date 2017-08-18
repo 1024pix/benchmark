@@ -1,0 +1,14 @@
+config:
+  target: 'https://pix.beta.gouv.fr'
+  phases:
+    - duration: 300
+      arrivalRate: 10
+      rampTo: 50
+      name: "Warm up the application"
+    - duration: 600
+      arrivalRate: 50
+      rampTo: 100
+scenarios:
+  - flow:
+    - get:
+        url: "/api"
