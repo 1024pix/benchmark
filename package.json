@@ -1,0 +1,26 @@
+{
+  "name": "pix",
+  "version": "1.0.0",
+  "description": "Recueil des tests de charge sur la plateforme PIX",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pix-fr/benchmark.git"
+  },
+  "keywords": [
+    "charge",
+    "test",
+    "artillery",
+    "performance",
+    "pix"
+  ],
+  "author": "Team PIX",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/pix-fr/benchmark/issues"
+  },
+  "homepage": "https://github.com/pix-fr/benchmark#readme"
+}
