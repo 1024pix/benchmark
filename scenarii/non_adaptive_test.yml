@@ -1,0 +1,90 @@
+config:
+  target: 'http://pix.beta.gouv.fr'
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: "Warming up the application"
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 20
+      name: "Ramp up to new 20 users per second for 2 minutes"
+    - duration: 300
+      arrivalRate: 20
+      name: "20 new users per second for 5 minutes"
+scenarios:
+  - flow:
+    - get:
+        name: 'Get Course details'
+        url: '/api/courses/recabz8r3tIHFRAbg'
+
+    - think: 10
+
+    - post:
+        url: '/api/assessments'
+        capture:
+          json: "$.data.id"
+          as: "assessmentId"
+        json:
+          data:
+            attributes:
+              user-name:
+              user-email:
+              estimated-level:
+              pix-score:
+            relationships:
+              course:
+                data:
+                  type: courses
+                  id: recabz8r3tIHFRAbg
+            type: assessments
+
+    - think: 10
+
+    - get:
+        url: '/api/assessments/{{ assessmentId }}/next'
+        capture:
+          json: "$.data.id"
+          as: "challengeId"
+    - log: "Current challengeId is set to: {{ challengeId }}"
+
+    - loop:
+
+      - think: 10
+
+      - post:
+          url: '/api/answers'
+          json:
+            data:
+              attributes:
+                value: '1'
+                result:
+                result-details:
+                timeout:
+                elapsed-time: 3060
+              relationships:
+                assessment:
+                  data:
+                    type: assessments
+                    id: "{{ assessmentId }}"
+                challenge:
+                  data:
+                    type: challenges
+                    id: "{{ challengeId }}"
+              type: answers
+
+      - get:
+          url: '/api/assessments/{{ assessmentId }}/next/{{ challengeId }}'
+          capture:
+            json: "$.data.id"
+            as: "challengeId"
+
+      - get:
+          url: '/api/answers?assessment={{ assessmentId }}&challenge={{ challengeId }}'
+
+      - get:
+          url: '/api/assessments/{{ assessmentId }}'
+
+      - get:
+          url: '/api/challenges/{{ challengeId }}'
+      count: 20
